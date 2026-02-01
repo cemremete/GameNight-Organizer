@@ -1,1 +1,1 @@
-# -GameNight-Organizer
+# GameNight-Organizer
