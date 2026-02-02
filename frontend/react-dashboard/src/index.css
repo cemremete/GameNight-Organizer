@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFF5F5;
+}
+
+.font-display {
+  font-family: 'Fredoka', 'Poppins', sans-serif;
+}
+
+/* playful text stroke effect for headings */
+.text-stroke {
+  -webkit-text-stroke: 2px #2D2D2D;
+  paint-order: stroke fill;
+}
+
+/* custom scrollbar - looks nicer */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFE3E3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF9B9B;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF8A8A;
+}
+
+/* dice floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.animate-float-delayed-2 {
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* gradient backgrounds */
+.bg-gradient-coral {
+  background: linear-gradient(135deg, #FF9B9B 0%, #FFB5B5 50%, #FFC9C9 100%);
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(180deg, #FF9B9B 0%, #FFE3E3 100%);
+}

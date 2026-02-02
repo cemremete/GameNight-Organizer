@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: gamenight-postgres
+    environment:
+      POSTGRES_DB: gamenight
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: gamenight-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Go Timezone Microservice
+  go-timezone:
+    build:
+      context: ./backend/go-timezone-service
+      dockerfile: Dockerfile
+    container_name: gamenight-timezone
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: 8081
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Node.js API Gateway
+  nodejs-api:
+    build:
+      context: ./backend/nodejs-api-gateway
+      dockerfile: Dockerfile
+    container_name: gamenight-api
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/gamenight
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      GO_TIMEZONE_SERVICE_URL: http://go-timezone:8081
+      FRONTEND_URL: http://localhost:3000
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      go-timezone:
+        condition: service_healthy
+
+  # React Frontend (development)
+  frontend:
+    build:
+      context: ./frontend/react-dashboard
+      dockerfile: Dockerfile.dev
+    container_name: gamenight-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+      VITE_WS_URL: http://localhost:3001
+    volumes:
+      - ./frontend/react-dashboard:/app
+      - /app/node_modules
+    depends_on:
+      - nodejs-api
+
+volumes:
+  postgres_data:
+  redis_data:
