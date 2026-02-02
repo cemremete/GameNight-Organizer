@@ -1,4 +1,4 @@
-# GameNight Organizer 🎲
+# GameNight Organizer 
 
 I built this because coordinating game nights with friends across different timezones was driving me crazy. Someone would always show up an hour late because they did the timezone math wrong at 2am. So I made this tool to handle all that automatically.
 
@@ -140,3 +140,6 @@ Feel free to open issues or PRs. This started as a personal project but happy to
 ---
 
 Made with 🎮 for gamers who hate timezone math
+=======
+# GameNight-Organizer
+>>>>>>> 2d772de2f0fab08d4cfa4fda379e60cd7c4d821b
